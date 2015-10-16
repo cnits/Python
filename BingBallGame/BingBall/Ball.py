@@ -1,10 +1,14 @@
 # __author__ = 'PhongVu'
-from Tkinter import *
+import math
 
 
 class Ball:
-    def __init__(self, fx, fy, lx, ly, color):
-        self.fx, self.fy, self.lx, self.ly = fx, fy, lx, ly
+    def __init__(self, container_width, container_height, color):
+        self.fx = math.floor(container_width/3)
+        self.fy = math.floor(container_height/3)
+        self.d = math.floor(container_height/10)
+        self.lx = self.fx + self.d
+        self.ly = self.fy + self.d
         self.color = color
 
     def set_coord(self, fx, fy, lx, ly):
@@ -17,7 +21,7 @@ class Ball:
         self.fx, self.fy, self.lx, self.ly = 0, 0, 0, 0
 
     def get_coord(self):
-        return self.fx, self.fy, self.lx, self.fy
+        return self.fx, self.fy, self.lx, self.ly
 
     def get_color(self):
         return self.color
