@@ -11,8 +11,13 @@ If you get number of specific points you are a champion!
 Have fun!
 
 Thanks!
-Reference: 
-1. https://www.python.org 
-2. http://effbot.org/tkinterbook 
-3. http://zetcode.com/gui/tkinter 
+
+Reference:
+ 
+1. https://www.python.org
+ 
+2. http://effbot.org/tkinterbook
+ 
+3. http://zetcode.com/gui/tkinter
+ 
 4. http://nullege.com/codes/search/Tkinter
