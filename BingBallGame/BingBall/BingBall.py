@@ -40,13 +40,66 @@ class BingBall(Frame):
         ball = self.board.find_withtag("ball")
         xc1, yc1, xc2, yc2 = self.board.coords(ball)
         xc, yc = self.get_average_coord(xc1, yc1, xc2, yc2)
-        corner = random.randint(0, 90)
-        print(xc, yc)
-        #while 1:
-        #x2, y2 = i + SPEED, i + SPEED
-        #self.board.move("ball", x2-x1, y2-y1)
-        #self.board.after(200)
-        #self.board.update()
+        corner = random.randint(1, 90)
+        # print(xc, yc)
+        xi, yi = self.random_position()
+        # print(xi, yi)
+        # print(math.tan(math.radians(corner)))
+        while 1:
+            if xi == xc:
+                if yi == yc:
+                    xi, yi = self.random_position()
+                elif yi < yc:
+                    self.move_to_top()
+                else:
+                    self.move_to_bottom()
+            elif xc < xc:
+                if yi == yc:
+                    self.move_to_left()
+                elif yi < yc:
+                    self.move_left_top()
+                else:
+                    self.move_left_bottom()
+            else:
+                if yi == yc:
+                    self.move_to_right()
+                elif yi < yc:
+                    self.move_right_top()
+                else:
+                    self.move_right_bottom()
+            xc, yc = xi, yi
+        # x2, y2 = i + SPEED, i + SPEED
+        # self.board.move("ball", x2-x1, y2-y1)
+        # self.board.after(200)
+        # self.board.update()
+
+    def move_right_top(self):
+        pass
+
+    def move_right_bottom(self):
+        pass
+
+    def move_to_right(self):
+        pass
+
+    def move_left_top(self):
+        pass
+
+    def move_left_bottom(self):
+        pass
+
+    def move_to_left(self):
+        pass
+
+    def move_to_top(self):
+        pass
+
+    def move_to_bottom(self):
+        pass
+
+    @classmethod
+    def random_position(cls):
+        return random.randint(0, WIDTH), random.randint(0, HEIGHT)
 
     @classmethod
     def get_average_coord(cls, x0, y0, x1, y1):
