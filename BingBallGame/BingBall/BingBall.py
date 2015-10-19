@@ -1,14 +1,17 @@
 # __author__ = 'PhongVu'
-import sys
+# import sys
 import random
-import math
+# import math
 from Board import *
 from Ball import *
+from Bar import *
 from Tkinter import *
 
 WIDTH, HEIGHT = 650, 450
 BOARD_COLOR = "#E1E1E1"
 BALL_COLOR = "#1E90FF"
+BTOP_COLOR = "Green"
+BBOTTOM_COLOR = "#FF0000"
 SPEED = 300
 
 
@@ -20,6 +23,9 @@ class BingBall(Frame):
         self.board = Board(self, WIDTH, HEIGHT, BOARD_COLOR)
         self.ball = Ball(WIDTH, HEIGHT, BALL_COLOR)
 
+        self.barTop = Bar(WIDTH, HEIGHT, BTOP_COLOR, "TOP")
+        self.barBottom = Bar(WIDTH, HEIGHT, BBOTTOM_COLOR, "BOTTOM")
+
         self.initialize()
 
     def initialize(self):
@@ -30,6 +36,18 @@ class BingBall(Frame):
             self.ball.get_coord(),
             outline="red", fill=self.ball.get_color(),
             width=1, tags="ball"
+        )
+
+        self.board.create_rectangle(
+            self.barTop.get_coord(),
+            outline="#05f", fill=self.barTop.get_color(),
+            width=1, tags="barTop"
+        )
+
+        self.board.create_rectangle(
+            self.barBottom.get_coord(),
+            outline="#05f", fill=self.barBottom.get_color(),
+            tags="barBottom"
         )
 
         self.board.pack(fill=BOTH, expand=1)
@@ -202,6 +220,9 @@ if __name__ == "__main__":
     # root.geometry("650x450+300+300")
     # To prevent resizing a frame
     root.resizable(0, 0)
-    app.process_move()
+    try:
+        app.process_move()
+    except IOError, e:
+        print e
+        sys.exit(1)
     root.mainloop()
-
