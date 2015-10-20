@@ -23,6 +23,9 @@ class BingBall(Frame):
         self.board = Board(self, WIDTH, HEIGHT, BOARD_COLOR)
         self.ball = Ball(WIDTH, HEIGHT, BALL_COLOR)
 
+        self.delta = self.ball.d/2
+        self.delta_bar = self.ball.d
+
         self.barTop = Bar(WIDTH, HEIGHT, BTOP_COLOR, "TOP")
         self.barBottom = Bar(WIDTH, HEIGHT, BBOTTOM_COLOR, "BOTTOM")
 
@@ -94,16 +97,16 @@ class BingBall(Frame):
                 corner = 90 - corner
                 k = WIDTH - xc
                 d = math.floor(k*math.tan(math.radians(corner)))
-                xi, yi = WIDTH, yc - d
+                xi, yi = WIDTH - self.delta, yc - d
                 self.todo_move(xc=xc, yc=yc, xi=xi, yi=yi)
                 self.move_left_top(xc=xi, yc=yi)
             else:
-                xi, yi = xc + d, 0
+                xi, yi = xc + d, 0 + self.delta
                 self.todo_move(xc=xc, yc=yc, xi=xi, yi=yi)
                 self.move_right_bottom(xc=xi, yc=yi)
 
     def move_right_bottom(self, xc, yc):
-        corner = random.randint(0, 90)
+        corner = random.randint(10, 80)
         if corner == 0:
             self.move_to_bottom(xc=xc, yc=yc)
         elif corner == 90:
@@ -115,16 +118,16 @@ class BingBall(Frame):
                 corner = 90 - corner
                 k = WIDTH - xc
                 d = math.floor(k*math.tan(math.radians(corner)))
-                xi, yi = WIDTH, HEIGHT - yc - d
+                xi, yi = WIDTH - self.delta, HEIGHT - yc - d
                 self.todo_move(xc=xc, yc=yc, xi=xi, yi=yi)
                 self.move_left_bottom(xc=xi, yc=yi)
             else:
-                xi, yi = xc + d, HEIGHT
+                xi, yi = xc + d, HEIGHT - self.delta
                 self.todo_move(xc=xc, yc=yc, xi=xi, yi=yi)
                 self.move_right_top(xc=xi, yc=yi)
 
     def move_left_top(self, xc, yc):
-        corner = random.randint(0, 90)
+        corner = random.randint(10, 80)
         if corner == 0:
             self.move_to_top(xc=xc, yc=yc)
         elif corner == 90:
@@ -136,16 +139,16 @@ class BingBall(Frame):
                 corner = 90 - corner
                 k = xc
                 d = math.floor(k*math.tan(math.radians(corner)))
-                xi, yi = 0, yc - d
+                xi, yi = 0 + self.delta, yc - d
                 self.todo_move(xc=xc, yc=yc, xi=xi, yi=yi)
                 self.move_right_top(xc=xi, yc=yi)
             else:
-                xi, yi = xc - d, 0
+                xi, yi = xc - d, 0 + self.delta
                 self.todo_move(xc=xc, yc=yc, xi=xi, yi=yi)
                 self.move_left_bottom(xc=xi, yc=yi)
 
     def move_left_bottom(self, xc, yc):
-        corner = random.randint(0, 90)
+        corner = random.randint(10, 80)
         if corner == 0:
             self.move_to_bottom(xc=xc, yc=yc)
         elif corner == 90:
@@ -157,16 +160,16 @@ class BingBall(Frame):
                 corner = 90 - corner
                 k = xc
                 d = math.floor(k*math.tan(math.radians(corner)))
-                xi, yi = 0, HEIGHT - yc - d
+                xi, yi = 0 + self.delta, HEIGHT - yc - d
                 self.todo_move(xc=xc, yc=yc, xi=xi, yi=yi)
                 self.move_right_bottom(xc=xi, yc=yi)
             else:
-                xi, yi = xc - d, HEIGHT
+                xi, yi = xc - d, HEIGHT - self.delta
                 self.todo_move(xc=xc, yc=yc, xi=xi, yi=yi)
                 self.move_left_top(xc=xi, yc=yi)
 
     def move_to_right(self, xc, yc):
-        xi, yi = WIDTH, yc
+        xi, yi = WIDTH - self.delta, yc
         self.todo_move(xc=xc, yc=yc, xi=xi, yi=yi)
         bit = random.getrandbits(1)
         if bit == 1:
@@ -175,7 +178,7 @@ class BingBall(Frame):
             self.move_left_bottom(xc=xi, yc=yi)
 
     def move_to_left(self, xc, yc):
-        xi, yi = 0, yc
+        xi, yi = 0 + self.delta, yc
         self.todo_move(xc=xc, yc=yc, xi=xi, yi=yi)
         bit = random.getrandbits(1)
         if bit == 1:
@@ -184,7 +187,7 @@ class BingBall(Frame):
             self.move_right_bottom(xc=xi, yc=yi)
 
     def move_to_top(self, xc, yc):
-        xi, yi = xc, 0
+        xi, yi = xc, 0 + self.delta
         self.todo_move(xc=xc, yc=yc, xi=xi, yi=yi)
         bit = random.getrandbits(1)
         if bit == 1:
@@ -193,7 +196,7 @@ class BingBall(Frame):
             self.move_left_bottom(xc=xi, yc=yi)
 
     def move_to_bottom(self, xc, yc):
-        xi, yi = xc, HEIGHT
+        xi, yi = xc, HEIGHT - self.delta
         self.todo_move(xc=xc, yc=yc, xi=xi, yi=yi)
         bit = random.getrandbits(1)
         if bit == 1:
@@ -211,7 +214,7 @@ class BingBall(Frame):
 
     def todo_move(self, xc, yc, xi, yi):
         self.board.move("ball", xi-xc, yi-yc)
-        self.board.after(300)
+        self.board.after(100)
         self.board.update()
 
 if __name__ == "__main__":
