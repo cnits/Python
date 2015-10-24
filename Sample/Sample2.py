@@ -2,9 +2,10 @@ from Tkinter import *
 
 # this file demonstrates the movement of a single canvas item under mouse control
 
-class Test(Frame):
+
+class MouseEvent(Frame):
     ###################################################################
-    ###### Event callbacks for THE CANVAS (not the stuff drawn on it)
+    # Event callbacks for THE CANVAS (not the stuff drawn on it)
     ###################################################################
     def mouseDown(self, event):
         # remember where the mouse went down
@@ -18,7 +19,7 @@ class Test(Frame):
         self.lasty = event.y
 
     ###################################################################
-    ###### Event callbacks for canvas ITEMS (stuff drawn on the canvas)
+    # Event callbacks for canvas ITEMS (stuff drawn on the canvas)
     ###################################################################
     def mouseEnter(self, event):
         # the CURRENT tag is applied to the object the cursor is over.
@@ -51,5 +52,5 @@ class Test(Frame):
         Pack.config(self)
         self.createWidgets()
 
-test = Test()
+test = MouseEvent()
 test.mainloop()

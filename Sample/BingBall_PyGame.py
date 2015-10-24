@@ -1,4 +1,5 @@
 import sys, pygame
+import os
 pygame.init()
 
 size = width, height = 800, 600
@@ -7,7 +8,7 @@ black = 0, 0, 0
 
 screen = pygame.display.set_mode(size)
 
-ball = pygame.image.load(".\Sample\Asset\BaseBall.png")
+ball = pygame.image.load(os.getcwd() + "\Asset\BaseBall.png")
 ballrect = ball.get_rect()
 
 while 1:
