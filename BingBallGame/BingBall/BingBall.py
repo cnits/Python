@@ -11,6 +11,7 @@ BALL_COLOR = "#1E90FF"
 BTOP_COLOR = "Green"
 BBOTTOM_COLOR = "#FF0000"
 SPEED = [5, 5]
+DELAY = 2
 
 
 class BingBall(Frame):
@@ -56,7 +57,6 @@ class BingBall(Frame):
 
         self.board.bind("<1>", self.bar_top_move)
         self.board.bind("<Right>", self.bar_bottom_move)
-        # self.board.tag_bind(self.barTop, "<1>", self.mouse_down)
 
     def direct_ball(self):
         fx, fy, lx, ly = self.board.coords("ball")
@@ -69,11 +69,15 @@ class BingBall(Frame):
         if ly >= HEIGHT:
             SPEED[1] = -math.fabs(SPEED[1])
 
+    def direct_ball_rely_on_bar(self):
+        fx, fy, lx, ly = self.board.coords("ball")
+        pass
+
     def process_move(self):
         self.direct_ball()
         self.direct_bar_auto()
         self.board.move("ball", SPEED[0], SPEED[1])
-        self.after(5, self.process_move)
+        self.after(DELAY, self.process_move)
 
     def direct_bar_auto(self):
         fx, fy, lx, ly = self.board.coords("ball")
