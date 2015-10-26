@@ -12,7 +12,7 @@ BOARD_COLOR = "#E1E1E1"
 BALL_COLOR = "#1E90FF"
 BTOP_COLOR = "Green"
 BBOTTOM_COLOR = "#FF0000"
-SPEED = 300
+SPEED = [2, 2]
 
 
 class BingBall(Frame):
@@ -56,153 +56,22 @@ class BingBall(Frame):
         self.board.pack(fill=BOTH, expand=1)
         self.pack(fill=X, padx=5, pady=5)
 
+        self.board.bind("<1>", self.bar_top_move)
+        self.board.bind("<Right>", self.bar_bottom_move)
+        # self.board.tag_bind(self.barTop, "<1>", self.mouse_down)
+
     def process_move(self):
-        ball = self.board.find_withtag("ball")
-        xc1, yc1, xc2, yc2 = self.board.coords(ball)
-        xc, yc = self.get_average_coord(xc1, yc1, xc2, yc2)
-
-        xi, yi = self.random_position()
-        if xi == xc:
-            if yi == yc:
-                self.move_to_right(xc=xc, yc=yc)
-            elif yi < yc:
-                self.move_to_top(xc=xc, yc=yc)
-            else:
-                self.move_to_bottom(xc=xc, yc=yc)
-        elif xc < xc:
-            if yi == yc:
-                self.move_to_left(xc=xc, yc=yc)
-            elif yi < yc:
-                self.move_left_top(xc=xc, yc=yc)
-            else:
-                self.move_left_bottom(xc=xc, yc=yc)
-        else:
-            if yi == yc:
-                self.move_to_right(xc=xc, yc=yc)
-            elif yi < yc:
-                self.move_right_top(xc=xc, yc=yc)
-            else:
-                self.move_right_bottom(xc=xc, yc=yc)
-
-    def move_right_top(self, xc, yc):
-        corner = random.randint(0, 90)
-        if corner == 0:
-            self.move_to_top(xc=xc, yc=yc)
-        elif corner == 90:
-            self.move_to_right(xc=xc, yc=yc)
-        else:
-            k = yc
-            d = math.floor(k*math.tan(math.radians(corner)))
-            if xc + d > WIDTH:
-                corner = 90 - corner
-                k = WIDTH - xc
-                d = math.floor(k*math.tan(math.radians(corner)))
-                xi, yi = WIDTH - self.delta, yc - d
-                self.todo_move(xc=xc, yc=yc, xi=xi, yi=yi)
-                self.move_left_top(xc=xi, yc=yi)
-            else:
-                xi, yi = xc + d, 0 + self.delta
-                self.todo_move(xc=xc, yc=yc, xi=xi, yi=yi)
-                self.move_right_bottom(xc=xi, yc=yi)
-
-    def move_right_bottom(self, xc, yc):
-        corner = random.randint(10, 80)
-        if corner == 0:
-            self.move_to_bottom(xc=xc, yc=yc)
-        elif corner == 90:
-            self.move_to_right(xc=xc, yc=yc)
-        else:
-            k = HEIGHT - yc
-            d = math.floor(k*math.tan(math.radians(corner)))
-            if xc + d > WIDTH:
-                corner = 90 - corner
-                k = WIDTH - xc
-                d = math.floor(k*math.tan(math.radians(corner)))
-                xi, yi = WIDTH - self.delta, HEIGHT - yc - d
-                self.todo_move(xc=xc, yc=yc, xi=xi, yi=yi)
-                self.move_left_bottom(xc=xi, yc=yi)
-            else:
-                xi, yi = xc + d, HEIGHT - self.delta
-                self.todo_move(xc=xc, yc=yc, xi=xi, yi=yi)
-                self.move_right_top(xc=xi, yc=yi)
-
-    def move_left_top(self, xc, yc):
-        corner = random.randint(10, 80)
-        if corner == 0:
-            self.move_to_top(xc=xc, yc=yc)
-        elif corner == 90:
-            self.move_to_left(xc=xc, yc=yc)
-        else:
-            k = yc
-            d = math.floor(k*math.tan(math.radians(corner)))
-            if xc - d < 0:
-                corner = 90 - corner
-                k = xc
-                d = math.floor(k*math.tan(math.radians(corner)))
-                xi, yi = 0 + self.delta, yc - d
-                self.todo_move(xc=xc, yc=yc, xi=xi, yi=yi)
-                self.move_right_top(xc=xi, yc=yi)
-            else:
-                xi, yi = xc - d, 0 + self.delta
-                self.todo_move(xc=xc, yc=yc, xi=xi, yi=yi)
-                self.move_left_bottom(xc=xi, yc=yi)
-
-    def move_left_bottom(self, xc, yc):
-        corner = random.randint(10, 80)
-        if corner == 0:
-            self.move_to_bottom(xc=xc, yc=yc)
-        elif corner == 90:
-            self.move_to_left(xc=xc, yc=yc)
-        else:
-            k = HEIGHT - yc
-            d = math.floor(k*math.tan(math.radians(corner)))
-            if xc - d < 0:
-                corner = 90 - corner
-                k = xc
-                d = math.floor(k*math.tan(math.radians(corner)))
-                xi, yi = 0 + self.delta, HEIGHT - yc - d
-                self.todo_move(xc=xc, yc=yc, xi=xi, yi=yi)
-                self.move_right_bottom(xc=xi, yc=yi)
-            else:
-                xi, yi = xc - d, HEIGHT - self.delta
-                self.todo_move(xc=xc, yc=yc, xi=xi, yi=yi)
-                self.move_left_top(xc=xi, yc=yi)
-
-    def move_to_right(self, xc, yc):
-        xi, yi = WIDTH - self.delta, yc
-        self.todo_move(xc=xc, yc=yc, xi=xi, yi=yi)
-        bit = random.getrandbits(1)
-        if bit == 1:
-            self.move_left_top(xc=xi, yc=yi)
-        else:
-            self.move_left_bottom(xc=xi, yc=yi)
-
-    def move_to_left(self, xc, yc):
-        xi, yi = 0 + self.delta, yc
-        self.todo_move(xc=xc, yc=yc, xi=xi, yi=yi)
-        bit = random.getrandbits(1)
-        if bit == 1:
-            self.move_right_top(xc=xi, yc=yi)
-        else:
-            self.move_right_bottom(xc=xi, yc=yi)
-
-    def move_to_top(self, xc, yc):
-        xi, yi = xc, 0 + self.delta
-        self.todo_move(xc=xc, yc=yc, xi=xi, yi=yi)
-        bit = random.getrandbits(1)
-        if bit == 1:
-            self.move_right_bottom(xc=xi, yc=yi)
-        else:
-            self.move_left_bottom(xc=xi, yc=yi)
-
-    def move_to_bottom(self, xc, yc):
-        xi, yi = xc, HEIGHT - self.delta
-        self.todo_move(xc=xc, yc=yc, xi=xi, yi=yi)
-        bit = random.getrandbits(1)
-        if bit == 1:
-            self.move_right_top(xc=xi, yc=yi)
-        else:
-            self.move_left_top(xc=xi, yc=yi)
+        fx, fy, lx, ly = self.board.coords("ball")
+        if fx <= 0:
+            SPEED[0] = math.fabs(SPEED[0])
+        if lx >= WIDTH:
+            SPEED[0] = -math.fabs(SPEED[0])
+        if fy <= 0:
+            SPEED[1] = math.fabs(SPEED[1])
+        if ly >= HEIGHT:
+            SPEED[1] = -math.fabs(SPEED[1])
+        self.board.move("ball", SPEED[0], SPEED[1])
+        self.after(5, self.process_move)
 
     @classmethod
     def random_position(cls):
@@ -212,20 +81,31 @@ class BingBall(Frame):
     def get_average_coord(cls, x0, y0, x1, y1):
         return int((x0+x1)/2), int((y0+y1)/2)
 
-    def todo_move(self, xc, yc, xi, yi):
-        self.board.move("ball", xi-xc, yi-yc)
-        self.board.after(100)
-        self.board.update()
+    def bar_top_move(self, event):
+        x0, y0, x1, y1 = self.board.coords("barTop")
+        if event.x < x0:
+            self.board.move("barTop", event.x - x0, 0)
+        if event.x > x1:
+            self.board.move("barTop", event.x - x1, 0)
+        #print(event.x, event.y)
+
+    def bar_bottom_move(self, event):
+        print("TTT")
+
+    def mouse_move(self, event):
+        pass
 
 if __name__ == "__main__":
     root = Tk()
     app = BingBall(root)
-    # root.geometry("650x450+300+300")
+    # left = (root.winfo_screenwidth() - WIDTH) / 2
+    # top = (root.winfo_screenheight() - HEIGHT) / 2
+    # root.geometry('%dx%d+%d+%d' % (WIDTH, HEIGHT, left, top))
     # To prevent resizing a frame
     root.resizable(0, 0)
     try:
         app.process_move()
     except IOError, e:
         print e
-        sys.exit(1)
+        sys.exit()
     root.mainloop()
