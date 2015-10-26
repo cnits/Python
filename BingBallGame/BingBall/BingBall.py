@@ -58,7 +58,7 @@ class BingBall(Frame):
         self.board.bind("<Right>", self.bar_bottom_move)
         # self.board.tag_bind(self.barTop, "<1>", self.mouse_down)
 
-    def process_move(self):
+    def direct_ball(self):
         fx, fy, lx, ly = self.board.coords("ball")
         if fx <= 0:
             SPEED[0] = math.fabs(SPEED[0])
@@ -68,16 +68,26 @@ class BingBall(Frame):
             SPEED[1] = math.fabs(SPEED[1])
         if ly >= HEIGHT:
             SPEED[1] = -math.fabs(SPEED[1])
+
+    def process_move(self):
+        self.direct_ball()
+        self.direct_bar_auto()
         self.board.move("ball", SPEED[0], SPEED[1])
         self.after(5, self.process_move)
 
-    @classmethod
-    def random_position(cls):
-        return random.randint(0, WIDTH), random.randint(0, HEIGHT)
+    def direct_bar_auto(self):
+        fx, fy, lx, ly = self.board.coords("ball")
+        if fy + SPEED[1] <= 0:
+            self.move_bar("barTop", fx + SPEED[0])
+        if ly + SPEED[1] >= HEIGHT:
+            self.move_bar("barBottom", lx + SPEED[0])
 
-    @classmethod
-    def get_average_coord(cls, x0, y0, x1, y1):
-        return int((x0+x1)/2), int((y0+y1)/2)
+    def move_bar(self, bar, x):
+        x0, y0, x1, y1 = self.board.coords(bar)
+        if x < x0:
+            self.board.move(bar, x - x0, 0)
+        if x > x1:
+            self.board.move(bar, x - x1, 0)
 
     def bar_top_move(self, event):
         x0, y0, x1, y1 = self.board.coords("barTop")
@@ -85,13 +95,9 @@ class BingBall(Frame):
             self.board.move("barTop", event.x - x0, 0)
         if event.x > x1:
             self.board.move("barTop", event.x - x1, 0)
-        #print(event.x, event.y)
 
     def bar_bottom_move(self, event):
         print("TTT")
-
-    def mouse_move(self, event):
-        pass
 
 if __name__ == "__main__":
     root = Tk()
