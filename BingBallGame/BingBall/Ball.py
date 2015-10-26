@@ -1,11 +1,12 @@
 # __author__ = 'PhongVu'
 import math
+import random
 
 
 class Ball:
     def __init__(self, container_width, container_height, color):
-        self.fx = math.floor(container_width/3)
-        self.fy = math.floor(container_height/3)
+        self.fx = random.randint(0, container_width)
+        self.fy = random.randint(0, container_height)
         self.d = math.floor(container_height/10)
         self.lx = self.fx + self.d
         self.ly = self.fy + self.d

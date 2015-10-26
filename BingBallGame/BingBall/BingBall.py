@@ -1,7 +1,5 @@
 # __author__ = 'PhongVu'
 # import sys
-import random
-# import math
 from Board import *
 from Ball import *
 from Bar import *
@@ -12,7 +10,7 @@ BOARD_COLOR = "#E1E1E1"
 BALL_COLOR = "#1E90FF"
 BTOP_COLOR = "Green"
 BBOTTOM_COLOR = "#FF0000"
-SPEED = [2, 2]
+SPEED = [5, 5]
 
 
 class BingBall(Frame):
