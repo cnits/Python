@@ -11,7 +11,7 @@ except IOError, e:
 WIDTH, HEIGHT = 650, 450
 BOARD_COLOR = "#E1E1E1"
 BALL_COLOR = "#1E90FF"
-BTOP_COLOR = "Green"
+BTOP_COLOR = "GREEN"
 BBOTTOM_COLOR = "#FF0000"
 SPEED = [8, 8]
 DELAY = 2
@@ -131,14 +131,14 @@ class BingBall(Frame):
         greenTeam.set("0")
         redTeam.set("0")
         Label(master, text="G-Team", bd=1, font=("Helvetica", 16),
-              fg="#FFFFFF", bg="GREEN").pack(side=TOP, padx=5, pady=5)
+              fg="#FFFFFF", bg=BTOP_COLOR).pack(side=TOP, padx=5, pady=5)
         Label(master, textvariable=greenTeam, bd=1, font=("Helvetica", 20),
-              fg="purple", bg="GREEN").pack(side=TOP, padx=5, pady=2)
+              fg="purple", bg=BTOP_COLOR).pack(side=TOP, padx=5, pady=2)
 
         Label(master, text="R-Team", bd=1, font=("Helvetica", 16),
-              fg="#FFFFFF", bg="RED").pack(side=BOTTOM, padx=5, pady=5)
+              fg="#FFFFFF", bg=BBOTTOM_COLOR).pack(side=BOTTOM, padx=5, pady=5)
         Label(master, textvariable=redTeam, bd=1, font=("Helvetica", 20),
-              fg="blue", bg="RED").pack(side=BOTTOM, padx=5, pady=2)
+              fg="blue", bg=BBOTTOM_COLOR).pack(side=BOTTOM, padx=5, pady=2)
 
 if __name__ == "__main__":
     root = Tk()
