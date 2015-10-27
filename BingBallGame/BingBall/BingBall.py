@@ -3,14 +3,17 @@
 from Board import *
 from Ball import *
 from Bar import *
-from Tkinter import *
+try:
+    from Tkinter import *
+except IOError, e:
+    from tkinter import *
 
 WIDTH, HEIGHT = 650, 450
 BOARD_COLOR = "#E1E1E1"
 BALL_COLOR = "#1E90FF"
 BTOP_COLOR = "Green"
 BBOTTOM_COLOR = "#FF0000"
-SPEED = [5, 5]
+SPEED = [8, 8]
 DELAY = 2
 
 
@@ -31,6 +34,8 @@ class BingBall(Frame):
         self.initialize()
 
     def initialize(self):
+        global g, r
+        g = r = 0
         self.parent.title("BingBall Game")
         self.parent.config(bg="#324b21")
 
@@ -53,38 +58,53 @@ class BingBall(Frame):
         )
 
         self.board.pack(fill=BOTH, expand=1)
-        self.pack(fill=X, padx=5, pady=5)
+        self.pack(side=RIGHT, padx=5, pady=5)
 
-        self.board.bind("<1>", self.bar_top_move)
-        self.board.bind("<Right>", self.bar_bottom_move)
+        # self.board.bind("<1>", self.bar_top_event())
+        # self.board.bind("<Right>", self.bar_bottom_event())
 
     def direct_ball(self):
         fx, fy, lx, ly = self.board.coords("ball")
+        global top, bottom
+        top = bottom = False
         if fx <= 0:
             SPEED[0] = math.fabs(SPEED[0])
         if lx >= WIDTH:
             SPEED[0] = -math.fabs(SPEED[0])
         if fy <= 0:
             SPEED[1] = math.fabs(SPEED[1])
+            top = True
         if ly >= HEIGHT:
             SPEED[1] = -math.fabs(SPEED[1])
+            bottom = True
 
     def direct_ball_rely_on_bar(self):
         fx, fy, lx, ly = self.board.coords("ball")
         pass
 
     def process_move(self):
+        global top, bottom, g, r
         self.direct_ball()
         self.direct_bar_auto()
         self.board.move("ball", SPEED[0], SPEED[1])
+        if top is True or bottom is True:
+            x1, y1, x2, y2 = self.board.coords("ball")
+            tmp = self.board.find_overlapping(x1, y1, x2, y2)
+            if len(tmp) <= 1:
+                if top is True:
+                    r += 1
+                    redTeam.set(str(r))
+                else:
+                    g += 1
+                    greenTeam.set(str(g))
         self.after(DELAY, self.process_move)
 
     def direct_bar_auto(self):
         fx, fy, lx, ly = self.board.coords("ball")
-        if fy + SPEED[1] <= 0:
-            self.move_bar("barTop", fx + SPEED[0])
-        if ly + SPEED[1] >= HEIGHT:
-            self.move_bar("barBottom", lx + SPEED[0])
+        if fy + HEIGHT*SPEED[1] <= 0:
+            self.move_bar("barTop", 10 + fx + 2*SPEED[0])
+        if ly + HEIGHT*SPEED[1] >= HEIGHT:
+            self.move_bar("barBottom", lx + 2*SPEED[0] - 10)
 
     def move_bar(self, bar, x):
         x0, y0, x1, y1 = self.board.coords(bar)
@@ -93,25 +113,40 @@ class BingBall(Frame):
         if x > x1:
             self.board.move(bar, x - x1, 0)
 
-    def bar_top_move(self, event):
+    def bar_top_event(self, event):
         x0, y0, x1, y1 = self.board.coords("barTop")
         if event.x < x0:
             self.board.move("barTop", event.x - x0, 0)
         if event.x > x1:
             self.board.move("barTop", event.x - x1, 0)
 
-    def bar_bottom_move(self, event):
-        print("TTT")
+    def bar_bottom_event(self, event):
+        pass
+
+    @classmethod
+    def create_widget(cls, master):
+        global greenTeam, redTeam
+        greenTeam = StringVar()
+        redTeam = StringVar()
+        greenTeam.set("0")
+        redTeam.set("0")
+        Label(master, text="G-Team", bd=1, font=("Helvetica", 16),
+              fg="#FFFFFF", bg="GREEN").pack(side=TOP, padx=5, pady=5)
+        Label(master, textvariable=greenTeam, bd=1, font=("Helvetica", 20),
+              fg="purple", bg="GREEN").pack(side=TOP, padx=5, pady=2)
+
+        Label(master, text="R-Team", bd=1, font=("Helvetica", 16),
+              fg="#FFFFFF", bg="RED").pack(side=BOTTOM, padx=5, pady=5)
+        Label(master, textvariable=redTeam, bd=1, font=("Helvetica", 20),
+              fg="blue", bg="RED").pack(side=BOTTOM, padx=5, pady=2)
 
 if __name__ == "__main__":
     root = Tk()
     app = BingBall(root)
-    # left = (root.winfo_screenwidth() - WIDTH) / 2
-    # top = (root.winfo_screenheight() - HEIGHT) / 2
-    # root.geometry('%dx%d+%d+%d' % (WIDTH, HEIGHT, left, top))
     # To prevent resizing a frame
-    root.resizable(0, 0)
+    root.resizable(False, False)
     try:
+        app.create_widget(root)
         app.process_move()
     except IOError, e:
         print e
