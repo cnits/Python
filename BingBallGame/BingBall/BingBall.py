@@ -13,9 +13,8 @@ BOARD_COLOR = "#E1E1E1"
 BALL_COLOR = "#1E90FF"
 BTOP_COLOR = "GREEN"
 BBOTTOM_COLOR = "#FF0000"
-SPEED = [2, 2]
+SPEED = [8, 9]
 DELAY = 2
-AUTO = False
 
 
 class BingBall(Frame):
@@ -151,41 +150,55 @@ class BingBall(Frame):
         if event.x > x1:
             self.board.move("barTop", event.x - x1, 0)
 
-    @classmethod
-    def create_widget(cls, master):
+    def main(self, auto):
+        if auto is True:
+            self.parent.unbind("<Left>")
+            self.parent.unbind("<Right>")
+            self.board.unbind("<1>")
+
+            self.process_move_auto()
+        else:
+            # root.bind("<A>", app.bar_top_event_left)
+            # root.bind("<D>", app.bar_top_event_right)
+            self.parent.bind("<Left>", self.bar_bottom_event_left)
+            self.parent.bind("<Right>", self.bar_bottom_event_right)
+            self.board.bind("<1>", self.bar_top_event)
+
+            self.process_move_manual()
+
+
+class MainApp:
+    def __init__(self):
+        self.root = Tk()
+
+    def create_widget(self):
         global greenTeam, redTeam
         greenTeam = StringVar()
         redTeam = StringVar()
         greenTeam.set("0")
         redTeam.set("0")
-        Label(master, text="G-Team", bd=1, font=("Helvetica", 16),
+        Label(self.root, text="G-Team", bd=1, font=("Helvetica", 16),
               fg="#FFFFFF", bg=BTOP_COLOR).pack(side=TOP, padx=5, pady=5)
-        Label(master, textvariable=greenTeam, bd=1, font=("Helvetica", 20),
+        Label(self.root, textvariable=greenTeam, bd=1, font=("Helvetica", 20),
               fg="purple", bg=BTOP_COLOR).pack(side=TOP, padx=5, pady=2)
 
-        Label(master, text="R-Team", bd=1, font=("Helvetica", 16),
+        Label(self.root, text="R-Team", bd=1, font=("Helvetica", 16),
               fg="#FFFFFF", bg=BBOTTOM_COLOR).pack(side=BOTTOM, padx=5, pady=5)
-        Label(master, textvariable=redTeam, bd=1, font=("Helvetica", 20),
+        Label(self.root, textvariable=redTeam, bd=1, font=("Helvetica", 20),
               fg="blue", bg=BBOTTOM_COLOR).pack(side=BOTTOM, padx=5, pady=2)
 
-if __name__ == "__main__":
-    root = Tk()
-    app = BingBall(root)
-    # To prevent resizing a frame
-    root.resizable(False, False)
-    try:
-        app.create_widget(root)
-        if AUTO is True:
-            app.process_move_auto()
-        else:
-            # root.bind("<A>", app.bar_top_event_left)
-            # root.bind("<D>", app.bar_top_event_right)
-            root.bind("<Left>", app.bar_bottom_event_left)
-            root.bind("<Right>", app.bar_bottom_event_right)
-            app.board.bind("<1>", app.bar_top_event)
+    def main(self):
+        bb = BingBall(self.root)
+        # To prevent resizing a frame
+        self.root.resizable(False, False)
+        try:
+            self.create_widget()
+            bb.main(False)
+        except IOError, e:
+            print e
+            sys.exit()
+        self.root.mainloop()
 
-            app.process_move_manual()
-    except IOError, e:
-        print e
-        sys.exit()
-    root.mainloop()
+if __name__ == "__main__":
+    app = MainApp()
+    app.main()
