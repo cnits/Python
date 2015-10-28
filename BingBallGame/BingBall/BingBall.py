@@ -13,8 +13,9 @@ BOARD_COLOR = "#E1E1E1"
 BALL_COLOR = "#1E90FF"
 BTOP_COLOR = "GREEN"
 BBOTTOM_COLOR = "#FF0000"
-SPEED = [8, 8]
+SPEED = [2, 2]
 DELAY = 2
+AUTO = False
 
 
 class BingBall(Frame):
@@ -60,9 +61,6 @@ class BingBall(Frame):
         self.board.pack(fill=BOTH, expand=1)
         self.pack(side=RIGHT, padx=5, pady=5)
 
-        # self.board.bind("<1>", self.bar_top_event())
-        # self.board.bind("<Right>", self.bar_bottom_event())
-
     def direct_ball(self):
         fx, fy, lx, ly = self.board.coords("ball")
         global top, bottom
@@ -78,11 +76,24 @@ class BingBall(Frame):
             SPEED[1] = -math.fabs(SPEED[1])
             bottom = True
 
-    def direct_ball_rely_on_bar(self):
-        fx, fy, lx, ly = self.board.coords("ball")
-        pass
+    def process_move_manual(self):
+        global top, bottom, g, r
+        self.direct_ball()
+        # self.direct_bar_auto()
+        self.board.move("ball", SPEED[0], SPEED[1])
+        if top is True or bottom is True:
+            x1, y1, x2, y2 = self.board.coords("ball")
+            tmp = self.board.find_overlapping(x1, y1, x2, y2)
+            if len(tmp) <= 1:
+                if top is True:
+                    r += 1
+                    redTeam.set(str(r))
+                else:
+                    g += 1
+                    greenTeam.set(str(g))
+        self.after(DELAY, self.process_move_manual)
 
-    def process_move(self):
+    def process_move_auto(self):
         global top, bottom, g, r
         self.direct_ball()
         self.direct_bar_auto()
@@ -97,7 +108,7 @@ class BingBall(Frame):
                 else:
                     g += 1
                     greenTeam.set(str(g))
-        self.after(DELAY, self.process_move)
+        self.after(DELAY, self.process_move_auto)
 
     def direct_bar_auto(self):
         fx, fy, lx, ly = self.board.coords("ball")
@@ -113,15 +124,32 @@ class BingBall(Frame):
         if x > x1:
             self.board.move(bar, x - x1, 0)
 
+    def bar_top_event_left(self, event):
+        x0, y0, x1, y1 = self.board.coords("barTop")
+        if x0 > 0:
+            self.board.move("barTop", -2*math.fabs(SPEED[0]), 0)
+
+    def bar_top_event_right(self, event):
+        x0, y0, x1, y1 = self.board.coords("barTop")
+        if x1 < WIDTH:
+            self.board.move("barTop", 2*math.fabs(SPEED[0]), 0)
+
+    def bar_bottom_event_left(self, event):
+        x0, y0, x1, y1 = self.board.coords("barBottom")
+        if x0 > 0:
+            self.board.move("barBottom", -2*math.fabs(SPEED[0]), 0)
+
+    def bar_bottom_event_right(self, event):
+        x0, y0, x1, y1 = self.board.coords("barBottom")
+        if x1 < WIDTH:
+            self.board.move("barBottom", 2*math.fabs(SPEED[0]), 0)
+
     def bar_top_event(self, event):
         x0, y0, x1, y1 = self.board.coords("barTop")
         if event.x < x0:
             self.board.move("barTop", event.x - x0, 0)
         if event.x > x1:
             self.board.move("barTop", event.x - x1, 0)
-
-    def bar_bottom_event(self, event):
-        pass
 
     @classmethod
     def create_widget(cls, master):
@@ -147,7 +175,16 @@ if __name__ == "__main__":
     root.resizable(False, False)
     try:
         app.create_widget(root)
-        app.process_move()
+        if AUTO is True:
+            app.process_move_auto()
+        else:
+            # root.bind("<A>", app.bar_top_event_left)
+            # root.bind("<D>", app.bar_top_event_right)
+            root.bind("<Left>", app.bar_bottom_event_left)
+            root.bind("<Right>", app.bar_bottom_event_right)
+            app.board.bind("<1>", app.bar_top_event)
+
+            app.process_move_manual()
     except IOError, e:
         print e
         sys.exit()
