@@ -13,10 +13,12 @@ FRAMES_PER_SEC = 40     # SCREEN UPDATE RATE
 
 ################################################################################
 
+
 def main():
     # Start the program.
     initialise()
     mainloop()
+
 
 def initialise():
     # Setup simulation variables.
@@ -24,6 +26,7 @@ def initialise():
     active = False
     build_balls()
     build_graph()
+
 
 def build_graph():
     # Build GUI environment.
@@ -41,10 +44,12 @@ def build_graph():
     graph.after(1000, activate)
     graph.pack()
 
+
 def activate():
     # Active window_move event.
     global active
     active = True
+
 
 def window_move(event):
     # Respond to movements.
@@ -56,12 +61,14 @@ def window_move(event):
                 ball.velocity.y -= (1000 * (top - event.y))
             ball.position += diff
         left, top = event.x, event.y
-    
+
+
 def update():
     # Main simulation loop.
     graph.after(1000 / FRAMES_PER_SEC, update)
     draw()
     move()
+
 
 def draw():
     graph.delete(ALL)
@@ -80,6 +87,7 @@ def draw():
         graph.create_oval((x1, y1, x2, y2), fill='red')
     graph.update()
 
+
 def move():
     # Move all balls.
     for force in simulate_wall, simulate_gravity, simulate_friction:
@@ -89,6 +97,7 @@ def move():
         ball.update_velocity(balls)
     for ball in balls:
         ball.move()
+
 
 def simulate_wall(ball):
     # Create viewing boundaries.
@@ -101,18 +110,22 @@ def simulate_wall(ball):
         ball.velocity.y *= -1
         ball.position.y = HEIGHT - WALL
 
+
 def simulate_gravity(ball):
     # Create a pull.
     ball.velocity.y += 50
+
 
 def simulate_friction(ball):
     # Slow velocity down.
     ball.velocity *= .9925
 
+
 def limit_speed(ball):
     # Limit ball speed.
     if ball.velocity.mag() > SPEED_LIMIT:
         ball.velocity /= ball.velocity.mag() / SPEED_LIMIT
+
 
 def build_balls():
     # Create balls variable.
@@ -122,6 +135,7 @@ def build_balls():
 ################################################################################
 
 # TWO DIMENTIONAL VECTOR CLASS
+
 
 class TwoD:
 
@@ -171,11 +185,17 @@ class TwoD:
 
 # BALL IMPLEMENTATION CLASS
 
+
 class Ball:
 
     def __init__(self, width, height, offset, move_divider):
         self.velocity = TwoD(0, 0)
-        self.position = TwoD(*(-offset if random.randint(0, 1) else width + offset, random.randint(1, height)))
+        self.position = TwoD(
+            *(
+                -offset if random.randint(0, 1) else width + offset,
+                random.randint(1, height)
+            )
+        )
         self.move_divider = move_divider * 5
 
     def update_velocity(self, balls):
