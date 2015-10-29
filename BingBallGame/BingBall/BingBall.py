@@ -73,6 +73,8 @@ class BingBall(Frame):
     def reset_score(self):
         self.rScore = 0
         self.gScore = 0
+        redTeam.set(str(self.rScore))
+        greenTeam.set(str(self.gScore))
 
     def direct_ball(self):
         fx, fy, lx, ly = self.board.coords("ball")
@@ -185,8 +187,26 @@ class BingBall(Frame):
         else:
             self.process_move_manual()
 
+    def auto_play_event(self, event):
+        if self.isPlaying is False:
+            self.isAuto = True
+            self.reset_score()
+            self.reset_event_switch()
+
+    def manual_play_event(self, event):
+        if self.isPlaying is True:
+            self.isAuto = False
+            self.reset_score()
+            self.reset_event_switch()
+
     def main(self):
         self.parent.bind("<space>", self.play_event)
+        self.parent.bind("<F1>", self.auto_play_event)
+        self.parent.bind("<F2>", self.manual_play_event)
+        self.reset_event_switch()
+        self.play()
+
+    def reset_event_switch(self):
         if self.isAuto is True:
             self.parent.unbind("<Left>")
             self.parent.unbind("<Right>")
@@ -197,17 +217,16 @@ class BingBall(Frame):
             self.parent.bind("<Left>", self.bar_bottom_event_left)
             self.parent.bind("<Right>", self.bar_bottom_event_right)
             self.board.bind("<1>", self.bar_top_event)
-        self.play()
 
 
 class MainApp:
     def __init__(self):
         self.root = Tk()
-
-    def create_widget(self):
         global greenTeam, redTeam
         greenTeam = StringVar()
         redTeam = StringVar()
+
+    def create_widget(self):
         greenTeam.set("0")
         redTeam.set("0")
         Label(self.root, text="G-Team", bd=1, font=("Helvetica", 14),
@@ -230,7 +249,13 @@ class MainApp:
         except IOError as e:
             print e
             sys.exit()
+        self.root.bind("<Escape>", self.exit_event)
         self.root.mainloop()
+
+    def exit_event(self, event):
+        self.root.destroy()
+        sys.exit(0)
+
 
 if __name__ == "__main__":
     app = MainApp()
