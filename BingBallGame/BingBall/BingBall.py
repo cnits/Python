@@ -64,16 +64,20 @@ class BingBall(Frame):
         fx, fy, lx, ly = self.board.coords("ball")
         global top, bottom
         top = bottom = False
+        tmp = self.board.find_overlapping(fx, fy, lx, ly)
+
         if fx <= 0:
             SPEED[0] = math.fabs(SPEED[0])
         if lx >= WIDTH:
             SPEED[0] = -math.fabs(SPEED[0])
-        if fy <= 0:
+        if fy <= 0 or (len(tmp) > 1 and fy < HEIGHT/2 and ly < HEIGHT):
             SPEED[1] = math.fabs(SPEED[1])
-            top = True
-        if ly >= HEIGHT:
+            if fy <= 0:
+                top = True
+        if ly >= HEIGHT or (len(tmp) > 1 and fy > HEIGHT/2 and ly < HEIGHT):
             SPEED[1] = -math.fabs(SPEED[1])
-            bottom = True
+            if ly >= HEIGHT:
+                bottom = True
 
     def process_move_manual(self):
         global top, bottom, g, r
