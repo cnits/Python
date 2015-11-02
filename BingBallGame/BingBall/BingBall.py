@@ -194,7 +194,7 @@ class BingBall(Frame):
             self.reset_event_switch()
 
     def manual_play_event(self, event):
-        if self.isPlaying is True:
+        if self.isPlaying is False:
             self.isAuto = False
             self.reset_score()
             self.reset_event_switch()
@@ -247,7 +247,6 @@ class MainApp:
             self.create_widget()
             bb.main()
         except IOError as e:
-            print e
             sys.exit()
         self.root.bind("<Escape>", self.exit_event)
         self.root.mainloop()
