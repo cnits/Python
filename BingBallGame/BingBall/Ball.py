@@ -5,9 +5,13 @@ import random
 
 class Ball:
     def __init__(self, container_width, container_height, color):
-        self.fx = random.randint(0, container_width)
-        self.fy = random.randint(0, container_height)
-        self.d = math.floor(container_height/10)
+        temp = container_height
+        if container_width < container_height:
+            temp = container_width
+        self.d = math.floor(temp/10)
+
+        self.fx = random.randint(0, container_width - 2*self.d)
+        self.fy = random.randint(0, container_height - 2*self.d)
         self.lx = self.fx + self.d
         self.ly = self.fy + self.d
         self.color = color

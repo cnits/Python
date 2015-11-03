@@ -15,8 +15,9 @@ BOARD_COLOR = "#E1E1E1"
 BALL_COLOR = "#1E90FF"
 BTOP_COLOR = "GREEN"
 BBOTTOM_COLOR = "#FF0000"
-SPEED = [5, 5]
-DELAY = 20
+SPEED = [7, 7]
+MIN_DELAY = 1
+MAX_DELAY = 30
 
 
 class BingBall(Frame):
@@ -28,6 +29,7 @@ class BingBall(Frame):
         self.isPlaying = False
         self.rScore = 0
         self.gScore = 0
+        self.DELAY = int(math.ceil(MAX_DELAY/2))
 
         self.W = self.parent.winfo_screenwidth() - MIN_W
         self.H = self.parent.winfo_screenheight() - MIN_H
@@ -112,7 +114,7 @@ class BingBall(Frame):
                 else:
                     self.gScore += 1
                     greenTeam.set(str(self.gScore))
-        self.after(DELAY, self.process_move_manual)
+        self.board.after(self.DELAY, self.process_move_manual)
 
     def process_move_auto(self):
         if self.isPlaying is False:
@@ -131,7 +133,7 @@ class BingBall(Frame):
                 else:
                     self.gScore += 1
                     greenTeam.set(str(self.gScore))
-        self.after(DELAY, self.process_move_auto)
+        self.board.after(self.DELAY, self.process_move_auto)
 
     def direct_bar_auto(self):
         fx, fy, lx, ly = self.board.coords("ball")
@@ -199,10 +201,20 @@ class BingBall(Frame):
             self.reset_score()
             self.reset_event_switch()
 
+    def up_delay_event(self, event):
+        if self.DELAY < MAX_DELAY:
+            self.DELAY += 1
+
+    def down_delay_event(self, event):
+        if self.DELAY > MIN_DELAY:
+            self.DELAY -= 1
+
     def main(self):
         self.parent.bind("<space>", self.play_event)
         self.parent.bind("<F1>", self.auto_play_event)
         self.parent.bind("<F2>", self.manual_play_event)
+        self.parent.bind("<Up>", self.down_delay_event)
+        self.parent.bind("<Down>", self.up_delay_event)
         self.reset_event_switch()
         self.play()
 

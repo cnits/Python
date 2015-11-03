@@ -6,6 +6,10 @@ class Bar:
     def __init__(self, container_width, container_height, color, position):
         self.dx = math.floor(container_width/10)
         self.dy = math.floor(self.dx/3)
+
+        if self.dy > 25:
+            self.dy = 25
+
         if str.upper(position) == "TOP":
             self.fy = 0
             self.ly = self.fy + self.dy
