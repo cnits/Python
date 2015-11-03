@@ -1,13 +1,23 @@
-==========***** Python Project *****==========
+***** Python Project *****
+
 Welcome to BingBallGame!
+
 This is a mini game project.
 
 *****************************************************************
+
 ### Introduction: ###
-Move arrow keys to try to save the ball before hitting the ground and loose points.
-If you save the ball before hitting the ground you will gain points.
-Try to get as many points as you can in a minute.
-If you get number of specific points you are a champion!
+
+- There are two play mode: Auto(Default) and Manual
+
+- To play or pause, you press "space" key on keyboard
+
+- To switch between two play mode, you must pause game and press F1(Auto) or F2(Manual)
+
+- To Manual play, Red bar is controlled by Left and Right arrows. Green bar is controlled by mouse
+
+- To exit game, press "Esc" key
+
 Have fun!
 
 Thanks!
