@@ -15,7 +15,7 @@ BOARD_COLOR = "#E1E1E1"
 BALL_COLOR = "#1E90FF"
 BTOP_COLOR = "GREEN"
 BBOTTOM_COLOR = "#FF0000"
-SPEED = [7, 7]
+SPEED = [2, 2]
 MIN_DELAY = 1
 MAX_DELAY = 30
 
@@ -45,6 +45,12 @@ class BingBall(Frame):
         self.barBottom = Bar(self.W, self.H, BBOTTOM_COLOR, "BOTTOM")
 
         self.initialize()
+
+    def get_width(self):
+        return self.W
+
+    def get_height(self):
+        return self.H
 
     def initialize(self):
         self.reset_score()
@@ -261,6 +267,9 @@ class MainApp:
         except IOError as e:
             sys.exit()
         self.root.bind("<Escape>", self.exit_event)
+        self.root.geometry(
+            "%dx%d+%d+%d" % (bb.get_width() + 120, bb.get_height() + 10, 20, 20)
+        )
         self.root.mainloop()
 
     def exit_event(self, event):
