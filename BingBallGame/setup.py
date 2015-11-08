@@ -4,15 +4,14 @@ except ImportError:
     from distutils.core import setup
 
 config = {
-    'Author': 'Cnit',
-    'Url': 'pt.cnit',
-    'Download_Url': 'download.pt.cnit/bingball-pt',
-    'Author_Email': 'bingball@pt.cnit',
-    'version': '0.1',
-    'Install_Requires': ['nose'],
-    'Packages': ['BingBallPT'],
-    'Name': 'Bing-Ball-PT',
-    'Description': 'Bing ball game project'
+    'author': 'cnit',
+    'url': 'http://github.com/cnits',
+    'author_email': 'bingball@pt.cnit',
+    'version': '1.0',
+    'install_requires': ['Python >= 2.7', 'Tkinter'],
+    'packages': ['BingBallGame.BingBall'],
+    'name': 'Bing-Ball-Game',
+    'description': 'Bing ball game project'
 }
 
 setup(**config)
