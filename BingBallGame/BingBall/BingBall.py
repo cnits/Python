@@ -3,10 +3,6 @@
 from Board import *
 from Ball import *
 from Bar import *
-try:
-    from Tkinter import *
-except:
-    from tkinter import *
 
 MIN_W = 250
 MIN_H = 150
