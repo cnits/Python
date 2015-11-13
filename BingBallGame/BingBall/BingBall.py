@@ -62,7 +62,7 @@ class BingBall(Frame):
             SPEED[0] = math.fabs(SPEED[0])
         if lx >= self.W:
             SPEED[0] = -math.fabs(SPEED[0])
-        if fy <= 0 or (len(tmp) > 1 and fy < self.H/2 and ly < self.H):
+        if fy <= 0 or (len(tmp) > 1 and ly < self.H/2 and fy > 0):
             SPEED[1] = math.fabs(SPEED[1])
             if fy <= 0:
                 top = True
