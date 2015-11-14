@@ -3,6 +3,7 @@
 from Board import *
 from Ball import *
 from Bar import *
+import BBConfig as bbc
 
 MIN_W = 250
 MIN_H = 150
@@ -52,76 +53,48 @@ class BingBall(Frame):
         redTeam.set(str(self.barBottom.score))
         greenTeam.set(str(self.barTop.score))
 
-    def direct_ball(self):
-        fx, fy, lx, ly = self.board.coords(self.ball.get_name())
-        global top, bottom
-        top = bottom = False
-        tmp = self.board.find_overlapping(fx, fy, lx, ly)
-
-        if fx <= 0:
-            SPEED[0] = math.fabs(SPEED[0])
-        if lx >= self.W:
-            SPEED[0] = -math.fabs(SPEED[0])
-        if fy <= 0 or (len(tmp) > 1 and ly < self.H/2 and fy > 0):
-            SPEED[1] = math.fabs(SPEED[1])
-            if fy <= 0:
-                top = True
-        if ly >= self.H or (len(tmp) > 1 and fy > self.H/2 and ly < self.H):
-            SPEED[1] = -math.fabs(SPEED[1])
-            if ly >= self.H:
-                bottom = True
-
     def process_move_manual(self):
         if self.isPlaying is False:
             return 1
-        global top, bottom
-        self.direct_ball()
+        self.ball.direct_v_ball()
         # self.direct_bar_auto()
-        self.board.move(self.ball.get_name(), SPEED[0], SPEED[1])
-        if top is True or bottom is True:
+        self.board.move(self.ball.get_name(), bbc.SPEED[0], bbc.SPEED[1])
+        if self.ball.current == bbc.BAR_T or self.ball.current == bbc.BAR_B:
             x1, y1, x2, y2 = self.board.coords(self.ball.get_name())
             tmp = self.board.find_overlapping(x1, y1, x2, y2)
             if len(tmp) <= 1:
-                if top is True:
-                    self.barBottom.set_score(1)
-                    redTeam.set(str(self.barBottom.score))
-                else:
-                    self.barTop.set_score(1)
-                    greenTeam.set(str(self.barTop.score))
+                 if self.ball.current == bbc.BAR_T:
+                     self.barBottom.set_score(1)
+                     redTeam.set(str(self.barBottom.score))
+                 else:
+                     self.barTop.set_score(1)
+                     greenTeam.set(str(self.barTop.score))
         self.board.after(self.DELAY, self.process_move_manual)
 
     def process_move_auto(self):
         if self.isPlaying is False:
             return 1
-        global top, bottom
-        self.direct_ball()
+        self.ball.direct_v_ball()
         self.direct_bar_auto()
-        self.board.move(self.ball.get_name(), SPEED[0], SPEED[1])
-        if top is True or bottom is True:
+        self.board.move(self.ball.get_name(), bbc.SPEED[0], bbc.SPEED[1])
+        if self.ball.current == bbc.BAR_T or self.ball.current == bbc.BAR_B:
             x1, y1, x2, y2 = self.board.coords(self.ball.get_name())
             tmp = self.board.find_overlapping(x1, y1, x2, y2)
             if len(tmp) <= 1:
-                if top is True:
-                    self.barBottom.set_score(1)
-                    redTeam.set(str(self.barBottom.score))
-                else:
-                    self.barTop.set_score(1)
-                    greenTeam.set(str(self.barTop.score))
+                 if self.ball.current == bbc.BAR_T:
+                     self.barBottom.set_score(1)
+                     redTeam.set(str(self.barBottom.score))
+                 else:
+                     self.barTop.set_score(1)
+                     greenTeam.set(str(self.barTop.score))
         self.board.after(self.DELAY, self.process_move_auto)
 
     def direct_bar_auto(self):
         fx, fy, lx, ly = self.board.coords(self.ball.get_name())
-        if fy + self.H*SPEED[1] <= 0:
-            self.move_bar(self.barTop.get_name(), 10 + fx + 2*SPEED[0])
-        if ly + self.H*SPEED[1] >= self.H:
-            self.move_bar(self.barBottom.get_name(), lx + 2*SPEED[0] - 10)
-
-    def move_bar(self, bar, x):
-        x0, y0, x1, y1 = self.board.coords(bar)
-        if x < x0:
-            self.board.move(bar, x - x0, 0)
-        if x > x1:
-            self.board.move(bar, x - x1, 0)
+        if fy + self.H*bbc.SPEED[1] <= 0:
+            self.barTop.do_moving(10 + fx + 2*bbc.SPEED[0])
+        if ly + self.H*bbc.SPEED[1] >= self.H:
+            self.barBottom.do_moving(lx + 2*bbc.SPEED[0] - 10)
 
     def bar_top_event_left(self, event):
         x0, y0, x1, y1 = self.board.coords(self.barTop.get_name())
@@ -144,11 +117,7 @@ class BingBall(Frame):
             self.board.move(self.barBottom.get_name(), 2*math.fabs(SPEED[0]), 0)
 
     def bar_top_event(self, event):
-        x0, y0, x1, y1 = self.board.coords(self.barTop.get_name())
-        if event.x < x0:
-            self.board.move(self.barTop.get_name(), event.x - x0, 0)
-        if event.x > x1:
-            self.board.move(self.barTop.get_name(), event.x - x1, 0)
+        self.barTop.do_moving(event.x)
 
     def play_event(self, event):
         if self.isPlaying is True:

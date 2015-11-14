@@ -6,6 +6,7 @@ import BBConfig as bbc
 class Bar:
     def __init__(self, board, position):
         self.board = board
+        self.board.put_bar_pos(position)
         self.dx = math.floor(board.winfo_reqwidth()/10)
         self.dy = math.floor(self.dx/3)
         if self.dy > 25:
@@ -19,13 +20,15 @@ class Bar:
 
     def setup_bar(self):
         if self.position == bbc.BAR_T or self.position == bbc.BAR_L:
-            self.color = bbc.BAR_COLOR_1
+            self.color = bbc.BAR_COLOR_G
+            self.board.set_bar_g_name(self.get_name())
             if self.position == bbc.BAR_T:
                 self.set_coord(0, 0, self.dx, self.dy)
             else:
                 self.set_coord(0, 0, self.dy, self.dx)
         else:
-            self.color = bbc.BAR_COLOR_2
+            self.color = bbc.BAR_COLOR_R
+            self.board.set_bar_r_name(self.get_name())
             if self.position == bbc.BAR_B:
                 self.set_coord(
                     self.board.winfo_reqwidth() - 1 - self.dx,
@@ -76,5 +79,20 @@ class Bar:
         elif self.position == bbc.BAR_R:
             name = "barR"
         else:
-            name = "bar"
+            name = None
         return name
+
+    def do_moving(self, axis):
+        x0, y0, x1, y1 = self.board.coords(self.get_name())
+        delta_x, delta_y = 0, 0
+        if self.position == bbc.BAR_T or self.position == bbc.BAR_B:
+            if axis < x0:
+                delta_x = axis - x0
+            if axis > x1:
+                delta_x = axis - x1
+        else:
+            if axis < y0:
+                delta_y = axis - y0
+            if axis > y1:
+                delta_y = axis - y1
+        self.board.move(self.get_name(), delta_x, delta_y)

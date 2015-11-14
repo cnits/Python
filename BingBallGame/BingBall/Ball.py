@@ -20,7 +20,8 @@ class Ball:
         self.lx = self.fx + self.d
         self.ly = self.fy + self.d
         self.color = bbc.BALL_COLOR
-        self.current = 10
+        self.current = -1
+        self.is_playing = False
 
         self.setup_ball()
 
@@ -30,6 +31,7 @@ class Ball:
             outline="red", fill=self.get_color(),
             width=1, tags=self.get_name()
         )
+        self.board.set_ball_name(self.get_name())
 
     def set_coord(self, fx, fy, lx, ly):
         self.fx, self.fy, self.lx, self.ly = fx, fy, lx, ly
@@ -50,7 +52,7 @@ class Ball:
     def direct_v_ball(self):
         fx, fy, lx, ly = self.board.coords(self.get_name())
         tmp = self.board.find_overlapping(fx, fy, lx, ly)
-
+        self.current = -1
         if fx <= 0:
             bbc.SPEED[0] = math.fabs(bbc.SPEED[0])
         if lx >= self.board.winfo_reqwidth():
@@ -69,7 +71,7 @@ class Ball:
     def direct_h_ball(self):
         fx, fy, lx, ly = self.board.coords(self.get_name())
         tmp = self.board.find_overlapping(fx, fy, lx, ly)
-
+        self.current = -1
         if fy <= 0:
             bbc.SPEED[1] = math.fabs(bbc.SPEED[1])
         if ly >= self.board.winfo_reqheight():
@@ -84,3 +86,15 @@ class Ball:
             bbc.SPEED[0] = -math.fabs(bbc.SPEED[0])
             if ly >= self.board.winfo_reqwidth():
                 self.current = bbc.BAR_R
+
+    def do_moving(self):
+        if self.is_playing is False:
+            return 1
+        bar_pos = self.board.get_bar_pos()
+        if bar_pos == bbc.BAR_T or bar_pos == bbc.BAR_B:
+            self.direct_v_ball()
+        else:
+            self.direct_h_ball()
+        self.board.move(self.get_name(), bbc.SPEED[0], bbc.SPEED[1])
+        self.board.after(10, self.do_moving)
+
