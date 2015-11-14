@@ -7,8 +7,8 @@ BAR_T = 1
 BAR_R = 2
 BAR_B = 3
 BAR_L = 4
-BAR_COLOR_1 = "#00FF00"
-BAR_COLOR_2 = "#FF0000"
+BAR_COLOR_G = "#00FF00"
+BAR_COLOR_R = "#FF0000"
 
 # ====== Ball ====== #
 BALL_COLOR = "#1E90FF"
