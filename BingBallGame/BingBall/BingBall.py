@@ -5,14 +5,6 @@ from Ball import *
 from Bar import *
 import BBConfig as bbc
 
-MIN_W = 250
-MIN_H = 150
-
-BOARD_COLOR = "#E1E1E1"
-BALL_COLOR = "#1E90FF"
-BTOP_COLOR = "GREEN"
-BBOTTOM_COLOR = "#FF0000"
-SPEED = [5, 5]
 MIN_DELAY = 1
 MAX_DELAY = 30
 
@@ -22,16 +14,14 @@ class BingBall(Frame):
     def __init__(self, parent):
         Frame.__init__(self, parent)
         self.parent = parent
-        self.isAuto = True
-        self.isPlaying = False
         self.DELAY = int(math.ceil(MAX_DELAY/2))
 
-        self.W = self.parent.winfo_screenwidth() - MIN_W
-        self.H = self.parent.winfo_screenheight() - MIN_H
-        if self.W < MIN_W:
-            self.W = MIN_W
-        if self.H < MIN_H:
-            self.H = MIN_H
+        self.W = self.parent.winfo_screenwidth() - bbc.MIN_W
+        self.H = self.parent.winfo_screenheight() - bbc.MIN_H
+        if self.W < bbc.MIN_W:
+            self.W = bbc.MIN_W
+        if self.H < bbc.MIN_H:
+            self.H = bbc.MIN_H
 
         self.board = Board(self)
         self.ball = Ball(self.board)
@@ -48,45 +38,29 @@ class BingBall(Frame):
         self.pack(side=RIGHT, padx=5, pady=5)
 
     def reset_score(self):
-        self.barTop.reset_score()
-        self.barBottom.reset_score()
-        redTeam.set(str(self.barBottom.score))
-        greenTeam.set(str(self.barTop.score))
+        bbc.BAR_SCORE_G = 0
+        bbc.BAR_SCORE_R = 0
 
     def process_move_manual(self):
-        if self.isPlaying is False:
-            return 1
-        self.ball.direct_v_ball()
-        # self.direct_bar_auto()
-        self.board.move(self.ball.get_name(), bbc.SPEED[0], bbc.SPEED[1])
-        if self.ball.current == bbc.BAR_T or self.ball.current == bbc.BAR_B:
-            x1, y1, x2, y2 = self.board.coords(self.ball.get_name())
-            tmp = self.board.find_overlapping(x1, y1, x2, y2)
-            if len(tmp) <= 1:
-                 if self.ball.current == bbc.BAR_T:
-                     self.barBottom.set_score(1)
-                     redTeam.set(str(self.barBottom.score))
-                 else:
-                     self.barTop.set_score(1)
-                     greenTeam.set(str(self.barTop.score))
-        self.board.after(self.DELAY, self.process_move_manual)
+        self.ball.do_moving()
 
     def process_move_auto(self):
-        if self.isPlaying is False:
+        if bbc.IS_PLAYING is False:
             return 1
         self.ball.direct_v_ball()
         self.direct_bar_auto()
         self.board.move(self.ball.get_name(), bbc.SPEED[0], bbc.SPEED[1])
-        if self.ball.current == bbc.BAR_T or self.ball.current == bbc.BAR_B:
-            x1, y1, x2, y2 = self.board.coords(self.ball.get_name())
+        if self.ball.touched in [bbc.BAR_T, bbc.BAR_B, bbc.BAR_L, bbc.BAR_R]:
+            x1, y1, x2, y2 = self.ball.get_current_coords()
             tmp = self.board.find_overlapping(x1, y1, x2, y2)
             if len(tmp) <= 1:
-                 if self.ball.current == bbc.BAR_T:
-                     self.barBottom.set_score(1)
-                     redTeam.set(str(self.barBottom.score))
-                 else:
-                     self.barTop.set_score(1)
-                     greenTeam.set(str(self.barTop.score))
+                if self.ball.touched in [bbc.BAR_T, bbc.BAR_L]:
+                    # R won - G failed
+                    bbc.BAR_SCORE_R += 1
+                else:
+                    if self.ball.touched in [bbc.BAR_B, bbc.BAR_R]:
+                        # G won - R failed
+                        bbc.BAR_SCORE_G += 1
         self.board.after(self.DELAY, self.process_move_auto)
 
     def direct_bar_auto(self):
@@ -99,48 +73,48 @@ class BingBall(Frame):
     def bar_top_event_left(self, event):
         x0, y0, x1, y1 = self.board.coords(self.barTop.get_name())
         if x0 > 0:
-            self.board.move(self.barTop.get_name(), -2*math.fabs(SPEED[0]), 0)
+            self.board.move(self.barTop.get_name(), -2*math.fabs(bbc.SPEED[0]), 0)
 
     def bar_top_event_right(self, event):
         x0, y0, x1, y1 = self.board.coords(self.barTop.get_name())
         if x1 < self.W:
-            self.board.move(self.barTop.get_name(), 2*math.fabs(SPEED[0]), 0)
+            self.board.move(self.barTop.get_name(), 2*math.fabs(bbc.SPEED[0]), 0)
 
     def bar_bottom_event_left(self, event):
         x0, y0, x1, y1 = self.board.coords(self.barBottom.get_name())
         if x0 > 0:
-            self.board.move(self.barBottom.get_name(), -2*math.fabs(SPEED[0]), 0)
+            self.board.move(self.barBottom.get_name(), -2*math.fabs(bbc.SPEED[0]), 0)
 
     def bar_bottom_event_right(self, event):
         x0, y0, x1, y1 = self.board.coords(self.barBottom.get_name())
         if x1 < self.W:
-            self.board.move(self.barBottom.get_name(), 2*math.fabs(SPEED[0]), 0)
+            self.board.move(self.barBottom.get_name(), 2*math.fabs(bbc.SPEED[0]), 0)
 
     def bar_top_event(self, event):
         self.barTop.do_moving(event.x)
 
     def play_event(self, event):
-        if self.isPlaying is True:
-            self.isPlaying = False
+        if bbc.IS_PLAYING is True:
+            bbc.IS_PLAYING = False
         else:
-            self.isPlaying = True
+            bbc.IS_PLAYING = True
             self.play()
 
     def play(self):
-        if self.isAuto is True:
+        if bbc.IS_AUTO is True:
             self.process_move_auto()
         else:
             self.process_move_manual()
 
     def auto_play_event(self, event):
-        if self.isPlaying is False:
-            self.isAuto = True
+        if bbc.IS_PLAYING is False:
+            bbc.IS_AUTO = True
             self.reset_score()
             self.reset_event_switch()
 
     def manual_play_event(self, event):
-        if self.isPlaying is False:
-            self.isAuto = False
+        if bbc.IS_PLAYING is False:
+            bbc.IS_AUTO = False
             self.reset_score()
             self.reset_event_switch()
 
@@ -162,7 +136,7 @@ class BingBall(Frame):
         self.play()
 
     def reset_event_switch(self):
-        if self.isAuto is True:
+        if bbc.IS_AUTO is True:
             self.parent.unbind("<Left>")
             self.parent.unbind("<Right>")
             self.board.unbind("<1>")
@@ -185,14 +159,19 @@ class MainApp:
         greenTeam.set("0")
         redTeam.set("0")
         Label(self.root, text="G-Team", bd=1, font=("Helvetica", 14),
-              fg="#FFFFFF", bg=BTOP_COLOR).pack(side=TOP, padx=5, pady=5)
+              fg="#FFFFFF", bg=bbc.BAR_COLOR_G).pack(side=TOP, padx=5, pady=5)
         Label(self.root, textvariable=greenTeam, bd=1, font=("Helvetica", 20),
-              fg="purple", bg=BTOP_COLOR).pack(side=TOP, padx=5, pady=2)
+              fg="purple", bg=bbc.BAR_COLOR_G).pack(side=TOP, padx=5, pady=2)
 
         Label(self.root, text="R-Team", bd=1, font=("Helvetica", 14),
-              fg="#FFFFFF", bg=BBOTTOM_COLOR).pack(side=BOTTOM, padx=5, pady=5)
+              fg="#FFFFFF", bg=bbc.BAR_COLOR_R).pack(side=BOTTOM, padx=5, pady=5)
         Label(self.root, textvariable=redTeam, bd=1, font=("Helvetica", 20),
-              fg="blue", bg=BBOTTOM_COLOR).pack(side=BOTTOM, padx=5, pady=2)
+              fg="blue", bg=bbc.BAR_COLOR_R).pack(side=BOTTOM, padx=5, pady=2)
+
+    def update_scores(self):
+        redTeam.set(str(bbc.BAR_SCORE_R))
+        greenTeam.set(str(bbc.BAR_SCORE_G))
+        self.root.after(bbc.DELAY, self.update_scores)
 
     def main(self):
         bb = BingBall(self.root)
@@ -200,6 +179,7 @@ class MainApp:
         self.root.resizable(False, False)
         try:
             self.create_widget()
+            self.update_scores()
             bb.main()
         except IOError as e:
             sys.exit()

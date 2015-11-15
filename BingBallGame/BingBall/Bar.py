@@ -23,51 +23,43 @@ class Bar:
             self.color = bbc.BAR_COLOR_G
             self.board.set_bar_g_name(self.get_name())
             if self.position == bbc.BAR_T:
-                self.set_coord(0, 0, self.dx, self.dy)
+                self.set_coords(0, 0, self.dx, self.dy)
             else:
-                self.set_coord(0, 0, self.dy, self.dx)
+                self.set_coords(0, 0, self.dy, self.dx)
         else:
             self.color = bbc.BAR_COLOR_R
             self.board.set_bar_r_name(self.get_name())
             if self.position == bbc.BAR_B:
-                self.set_coord(
+                self.set_coords(
                     self.board.winfo_reqwidth() - 1 - self.dx,
                     self.board.winfo_reqheight() - 1 - self.dy,
                     self.board.winfo_reqwidth() - 1,
                     self.board.winfo_reqheight() - 1
                 )
             else:
-                self.set_coord(
+                self.set_coords(
                     self.board.winfo_reqwidth() - 1 - self.dy,
                     self.board.winfo_reqheight() - 1 - self.dx,
                     self.board.winfo_reqwidth() - 1,
                     self.board.winfo_reqheight() - 1
                 )
         self.board.create_rectangle(
-            self.get_coord(),
+            self.get_coords(),
             outline="#05f", fill=self.get_color(),
             width=1, tags=self.get_name()
         )
 
-    def set_coord(self, fx, fy, lx, ly):
+    def set_coords(self, fx, fy, lx, ly):
         self.fx, self.fy, self.lx, self.ly = fx, fy, lx, ly
 
     def set_color(self, color):
         self.color = color
 
-    def get_coord(self):
+    def get_coords(self):
         return self.fx, self.fy, self.lx, self.ly
 
     def get_color(self):
         return self.color
-
-    def set_score(self, score):
-        if isinstance(score, int) is False:
-            score = 1
-        self.score += score
-
-    def reset_score(self):
-        self.score = 0
 
     def get_name(self):
         if self.position == bbc.BAR_T:
