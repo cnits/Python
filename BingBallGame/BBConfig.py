@@ -9,14 +9,17 @@ BAR_B = 3
 BAR_L = 4
 BAR_COLOR_G = "#00FF00"
 BAR_COLOR_R = "#FF0000"
+BAR_SCORE_G = 0
+BAR_SCORE_R = 0
 
 # ====== Ball ====== #
 BALL_COLOR = "#1E90FF"
 SPEED = [5, 5]
-MIN_DELAY = 1
-MAX_DELAY = 30
+DELAY = 10
 
 # ====== Board ====== #
 MIN_W = 250
 MIN_H = 150
 BOARD_COLOR = "#E1E1E1"
+IS_PLAYING = False
+IS_AUTO = True
