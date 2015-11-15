@@ -45,48 +45,34 @@ class BingBall(Frame):
         self.ball.do_moving()
 
     def process_move_auto(self):
-        if bbc.IS_PLAYING is False:
-            return 1
-        self.ball.direct_v_ball()
         self.direct_bar_auto()
-        self.board.move(self.ball.get_name(), bbc.SPEED[0], bbc.SPEED[1])
-        if self.ball.touched in [bbc.BAR_T, bbc.BAR_B, bbc.BAR_L, bbc.BAR_R]:
-            x1, y1, x2, y2 = self.ball.get_current_coords()
-            tmp = self.board.find_overlapping(x1, y1, x2, y2)
-            if len(tmp) <= 1:
-                if self.ball.touched in [bbc.BAR_T, bbc.BAR_L]:
-                    # R won - G failed
-                    bbc.BAR_SCORE_R += 1
-                else:
-                    if self.ball.touched in [bbc.BAR_B, bbc.BAR_R]:
-                        # G won - R failed
-                        bbc.BAR_SCORE_G += 1
-        self.board.after(self.DELAY, self.process_move_auto)
+        self.ball.do_moving()
 
     def direct_bar_auto(self):
-        fx, fy, lx, ly = self.board.coords(self.ball.get_name())
+        fx, fy, lx, ly = self.ball.get_current_coords()
         if fy + self.H*bbc.SPEED[1] <= 0:
             self.barTop.do_moving(10 + fx + 2*bbc.SPEED[0])
         if ly + self.H*bbc.SPEED[1] >= self.H:
             self.barBottom.do_moving(lx + 2*bbc.SPEED[0] - 10)
+        self.after(5, self.direct_bar_auto)
 
     def bar_top_event_left(self, event):
-        x0, y0, x1, y1 = self.board.coords(self.barTop.get_name())
+        x0, y0, x1, y1 = self.barTop.get_current_coords()
         if x0 > 0:
             self.board.move(self.barTop.get_name(), -2*math.fabs(bbc.SPEED[0]), 0)
 
     def bar_top_event_right(self, event):
-        x0, y0, x1, y1 = self.board.coords(self.barTop.get_name())
+        x0, y0, x1, y1 = self.barTop.get_current_coords()
         if x1 < self.W:
             self.board.move(self.barTop.get_name(), 2*math.fabs(bbc.SPEED[0]), 0)
 
     def bar_bottom_event_left(self, event):
-        x0, y0, x1, y1 = self.board.coords(self.barBottom.get_name())
+        x0, y0, x1, y1 = self.barBottom.get_current_coords()
         if x0 > 0:
             self.board.move(self.barBottom.get_name(), -2*math.fabs(bbc.SPEED[0]), 0)
 
     def bar_bottom_event_right(self, event):
-        x0, y0, x1, y1 = self.board.coords(self.barBottom.get_name())
+        x0, y0, x1, y1 = self.barBottom.get_current_coords()
         if x1 < self.W:
             self.board.move(self.barBottom.get_name(), 2*math.fabs(bbc.SPEED[0]), 0)
 

@@ -58,6 +58,9 @@ class Bar:
     def get_coords(self):
         return self.fx, self.fy, self.lx, self.ly
 
+    def get_current_coords(self):
+        return self.board.coords(self.get_name())
+
     def get_color(self):
         return self.color
 
