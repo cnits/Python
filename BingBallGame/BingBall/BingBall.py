@@ -14,7 +14,6 @@ class BingBall(Frame):
     def __init__(self, parent):
         Frame.__init__(self, parent)
         self.parent = parent
-        self.DELAY = int(math.ceil(MAX_DELAY/2))
 
         self.W = self.parent.winfo_screenwidth() - bbc.MIN_W
         self.H = self.parent.winfo_screenheight() - bbc.MIN_H
@@ -49,6 +48,8 @@ class BingBall(Frame):
         self.ball.do_moving()
 
     def direct_bar_auto(self):
+        if bbc.IS_AUTO is False:
+            return 1
         fx, fy, lx, ly = self.ball.get_current_coords()
         if fy + self.H*bbc.SPEED[1] <= 0:
             self.barTop.do_moving(10 + fx + 2*bbc.SPEED[0])
@@ -105,12 +106,12 @@ class BingBall(Frame):
             self.reset_event_switch()
 
     def up_delay_event(self, event):
-        if self.DELAY < MAX_DELAY:
-            self.DELAY += 1
+        if bbc.DELAY < MAX_DELAY:
+            bbc.DELAY += 1
 
     def down_delay_event(self, event):
-        if self.DELAY > MIN_DELAY:
-            self.DELAY -= 1
+        if bbc.DELAY > MIN_DELAY:
+            bbc.DELAY -= 1
 
     def main(self):
         self.parent.bind("<space>", self.play_event)
