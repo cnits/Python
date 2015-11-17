@@ -79,7 +79,7 @@ class Bar:
 
     # M-2-M
     def do_moving(self, axis_of_ball):
-        x0, y0, x1, y1 = self.board.coords(self.get_name())
+        x0, y0, x1, y1 = self.get_current_coords()
         delta_x, delta_y = 0, 0
         if self.position == bbc.BAR_T or self.position == bbc.BAR_B:
             if axis_of_ball < x0:
@@ -100,18 +100,18 @@ class Bar:
         if direction == bbc.DIRECT_TO_LEFT:
             if self.position in [bbc.BAR_T, bbc.BAR_B]:
                 if x0 > 0:
-                    delta_x = -2*math.fabs(bbc.SPEED[0])
+                    delta_x = (-2) * math.fabs(bbc.SPEED[0])
             else:
                 if self.position in [bbc.BAR_L, bbc.BAR_R]:
                     if y0 > 0:
-                        delta_y = -2*math.fabs(bbc.SPEED[1])
+                        delta_y = (-2) * math.fabs(bbc.SPEED[1])
         else:
             if direction == bbc.DIRECT_TO_RIGHT:
                 if self.position in [bbc.BAR_T, bbc.BAR_B]:
                     if x1 < self.board.winfo_reqwidth():
-                        delta_x = 2*math.fabs(bbc.SPEED[0])
-            else:
-                if self.position in [bbc.BAR_L, bbc.BAR_R]:
-                    if y1 < self.board.winfo_reqheight():
-                        delta_y = 2*math.fabs(bbc.SPEED[1])
+                        delta_x = 2 * math.fabs(bbc.SPEED[0])
+                else:
+                    if self.position in [bbc.BAR_L, bbc.BAR_R]:
+                        if y1 < self.board.winfo_reqheight():
+                            delta_y = 2 * math.fabs(bbc.SPEED[1])
         self.board.move(self.get_name(), delta_x, delta_y)

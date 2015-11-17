@@ -81,12 +81,12 @@ class Ball:
         if fx <= 0 or \
                 (len(tmp) > 1 and lx < self.board.winfo_reqwidth()/2 and fx > 0):
             bbc.SPEED[0] = math.fabs(bbc.SPEED[0])
-            if fy <= 0:
+            if fx <= 0:
                 self.touched = bbc.BAR_L
         if lx >= self.board.winfo_reqwidth() or \
                 (len(tmp) > 1 and fx > self.board.winfo_reqwidth()/2 and lx < self.board.winfo_reqwidth()):
             bbc.SPEED[0] = -math.fabs(bbc.SPEED[0])
-            if ly >= self.board.winfo_reqwidth():
+            if lx >= self.board.winfo_reqwidth():
                 self.touched = bbc.BAR_R
 
     def do_moving(self):

@@ -24,8 +24,8 @@ class BingBall(Frame):
 
         self.board = Board(self)
         self.ball = Ball(self.board)
-        self.barTop = Bar(self.board, 1)
-        self.barBottom = Bar(self.board, 3)
+        self.barTop = Bar(self.board, bbc.BAR_T)
+        self.barBottom = Bar(self.board, bbc.BAR_B)
 
         self.initialize()
 
