@@ -40,13 +40,6 @@ class BingBall(Frame):
         bbc.BAR_SCORE_G = 0
         bbc.BAR_SCORE_R = 0
 
-    def process_move_manual(self):
-        self.ball.do_moving()
-
-    def process_move_auto(self):
-        self.direct_bar_auto()
-        self.ball.do_moving()
-
     def direct_bar_auto(self):
         if bbc.IS_AUTO is False:
             return 1
@@ -58,24 +51,16 @@ class BingBall(Frame):
         self.after(5, self.direct_bar_auto)
 
     def bar_top_event_left(self, event):
-        x0, y0, x1, y1 = self.barTop.get_current_coords()
-        if x0 > 0:
-            self.board.move(self.barTop.get_name(), -2*math.fabs(bbc.SPEED[0]), 0)
+        self.barTop.to_move(bbc.DIRECT_TO_LEFT)
 
     def bar_top_event_right(self, event):
-        x0, y0, x1, y1 = self.barTop.get_current_coords()
-        if x1 < self.W:
-            self.board.move(self.barTop.get_name(), 2*math.fabs(bbc.SPEED[0]), 0)
+        self.barTop.to_move(bbc.DIRECT_TO_RIGHT)
 
     def bar_bottom_event_left(self, event):
-        x0, y0, x1, y1 = self.barBottom.get_current_coords()
-        if x0 > 0:
-            self.board.move(self.barBottom.get_name(), -2*math.fabs(bbc.SPEED[0]), 0)
+        self.barBottom.to_move(bbc.DIRECT_TO_LEFT)
 
     def bar_bottom_event_right(self, event):
-        x0, y0, x1, y1 = self.barBottom.get_current_coords()
-        if x1 < self.W:
-            self.board.move(self.barBottom.get_name(), 2*math.fabs(bbc.SPEED[0]), 0)
+        self.barBottom.to_move(bbc.DIRECT_TO_RIGHT)
 
     def bar_top_event(self, event):
         self.barTop.do_moving(event.x)
@@ -88,21 +73,21 @@ class BingBall(Frame):
             self.play()
 
     def play(self):
-        if bbc.IS_AUTO is True:
-            self.process_move_auto()
-        else:
-            self.process_move_manual()
+        self.direct_bar_auto()
+        self.ball.do_moving()
 
     def auto_play_event(self, event):
         if bbc.IS_PLAYING is False:
+            if bbc.IS_AUTO is False:
+                self.reset_score()
             bbc.IS_AUTO = True
-            self.reset_score()
             self.reset_event_switch()
 
     def manual_play_event(self, event):
         if bbc.IS_PLAYING is False:
+            if bbc.IS_AUTO is True:
+                self.reset_score()
             bbc.IS_AUTO = False
-            self.reset_score()
             self.reset_event_switch()
 
     def up_delay_event(self, event):
@@ -126,10 +111,12 @@ class BingBall(Frame):
         if bbc.IS_AUTO is True:
             self.parent.unbind("<Left>")
             self.parent.unbind("<Right>")
+            self.parent.unbind("<a>")
+            self.parent.unbind("<d>")
             self.board.unbind("<1>")
         else:
-            # root.bind("<A>", app.bar_top_event_left)
-            # root.bind("<D>", app.bar_top_event_right)
+            self.parent.bind("<a>", self.bar_top_event_left)
+            self.parent.bind("<d>", self.bar_top_event_right)
             self.parent.bind("<Left>", self.bar_bottom_event_left)
             self.parent.bind("<Right>", self.bar_bottom_event_right)
             self.board.bind("<1>", self.bar_top_event)
